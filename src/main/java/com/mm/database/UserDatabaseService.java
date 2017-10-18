@@ -10,27 +10,28 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 
 import java.util.HashMap;
+import java.util.List;
 
 @ProxyGen
 public interface UserDatabaseService {
     static UserDatabaseService create(JDBCClient jdbcClient, HashMap<SqlQuery, String> sqlQueries,
                                       Handler<AsyncResult<UserDatabaseService>> readyHandler) {
-        return null;
+        return new UserDatabaseServiceImpl(jdbcClient, sqlQueries, readyHandler);
     }
 
     static UserDatabaseService createProxy(Vertx vertx, String address) {
-        return null;
+        return new UserDatabaseServiceVertxEBProxy(vertx, address) ;
     }
 
     @Fluent
     UserDatabaseService getUserByNameAndPass(String username, String password, Handler<AsyncResult<JsonObject>> resultHandler);
 
     @Fluent
-    UserDatabaseService getAllUser(Handler<AsyncResult<JsonArray>> resultHandler);
+    UserDatabaseService getAllUser(Handler<AsyncResult<List<JsonObject>>> resultHandler);
 
     @Fluent
     UserDatabaseService saveUser(String username, String password, Handler<AsyncResult<Void>> resultHandler);
 
     @Fluent
-    UserDatabaseService deleteUser(String username, Handler<AsyncResult<Void>> resultHandler);
+    UserDatabaseService deleteUser(String username, String password, Handler<AsyncResult<Void>> resultHandler);
 }

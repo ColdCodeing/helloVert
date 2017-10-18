@@ -14,7 +14,7 @@ import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
-import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.lang3.StringUtils;
 
 
 public class RestVerticle extends AbstractVerticle {
@@ -22,12 +22,12 @@ public class RestVerticle extends AbstractVerticle {
     private static final String QUERY = "SELECT * FROM t_user WHERE username=? AND password=?";
     private JDBCClient jdbc;
 
-    public static void main(String[] args) {
-        //Vertx 基类
-        Vertx vertx = Vertx.vertx();
-        //发布服务
-        vertx.deployVerticle(new RestVerticle());
-    }
+//    public static void main(String[] args) {
+//        //Vertx 基类
+//        Vertx vertx = Vertx.vertx();
+//        //发布服务
+//        vertx.deployVerticle(new RestVerticle());
+//    }
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
@@ -59,9 +59,9 @@ public class RestVerticle extends AbstractVerticle {
         String username = context.request().getParam("param1");
         String password = context.request().getParam("param2");
 
-        if (StringUtils.isBlank(password) || StringUtils.isBlank(username)){
-            context.response().setStatusCode(400).end();
-        }
+//        if (StringUtils.isBlank(password) || StringUtils.isBlank(username)){
+//            context.response().setStatusCode(400).end();
+//        }
 
         jdbc.getConnection(conn -> {
             if (conn.failed()) {
@@ -102,9 +102,9 @@ public class RestVerticle extends AbstractVerticle {
     private void handleLoginOut(RoutingContext context) {
         String username = context.request().getParam("param1");
 
-        if (StringUtils.isBlank(username)) {
-            context.response().setStatusCode(403).end();
-        }
+//        if (StringUtils.isBlank(username)) {
+//            context.response().setStatusCode(403).end();
+//        }
 
         //check out
         context.response().setStatusCode(200).end();

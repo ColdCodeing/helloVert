@@ -15,14 +15,10 @@
  * limitations under the License.
  */
 
-package com.mm.database;
-
 /**
  * @author <a href="https://julien.ponge.org/">Julien Ponge</a>
  */
-enum SqlQuery {
-  GET_USER,
-  GET_ALL_USER,
-  SAVE_USER,
-  DELETE_USER
-}
+@ModuleGen(groupPackage = "com.mm.database", name = "user-database")
+package com.mm.database;
+
+import io.vertx.codegen.annotations.ModuleGen;

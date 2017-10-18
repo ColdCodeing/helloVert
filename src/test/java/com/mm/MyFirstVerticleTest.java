@@ -29,7 +29,6 @@ public class MyFirstVerticleTest {
     @Test
     public void testMyApplication(TestContext context) {
         final Async async = context.async();
-
         vertx.createHttpClient().getNow(8080, "localhost", "/",
                 response -> {
                     response.handler(body -> {

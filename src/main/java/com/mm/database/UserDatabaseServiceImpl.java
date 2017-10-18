@@ -1,6 +1,5 @@
 package com.mm.database;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -17,6 +16,7 @@ import rx.Observable;
 import rx.Single;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class UserDatabaseServiceImpl implements UserDatabaseService {
 
@@ -31,9 +31,6 @@ public class UserDatabaseServiceImpl implements UserDatabaseService {
         this.sqlQueryStringHashMap = sqlQueryStringHashMap;
 
         //数据库连接
-        getConnection().flatMap(conn -> conn.rxExecute(sqlQueryStringHashMap.get(SqlQuery.CREATE_TABLE)))
-                .map(v -> this)
-                .subscribe(RxHelper.toSubscriber(readyHandler));
     }
 
     // tag::rx-get-connection[]
@@ -65,17 +62,31 @@ public class UserDatabaseServiceImpl implements UserDatabaseService {
     }
 
     @Override
-    public UserDatabaseService getAllUser(Handler<AsyncResult<JsonArray>> resultHandler) {
+    public UserDatabaseService getAllUser(Handler<AsyncResult<List<JsonObject>>> resultHandler) {
+        getConnection()
+                .flatMap(conn -> conn.rxQuery(sqlQueryStringHashMap.get(SqlQuery.GET_ALL_USER)))
+                .map(ResultSet::getRows)
+                .subscribe(RxHelper.toSubscriber(resultHandler));
         return this;
     }
 
     @Override
     public UserDatabaseService saveUser(String username, String password, Handler<AsyncResult<Void>> resultHandler) {
-        return null;
+        getConnection().flatMap(conn -> conn.rxUpdateWithParams(sqlQueryStringHashMap.get(SqlQuery.SAVE_USER),
+                new JsonArray().add(username).add(password)))
+                .map(res -> (Void) null)
+                .subscribe(RxHelper.toSubscriber(resultHandler));
+        return this;
     }
 
     @Override
-    public UserDatabaseService deleteUser(String username, Handler<AsyncResult<Void>> resultHandler) {
-        return null;
+    public UserDatabaseService deleteUser(String username, String password, Handler<AsyncResult<Void>> resultHandler) {
+        getConnection().flatMap(conn -> {
+            JsonArray data = new JsonArray().add(username).add(password);
+            return conn.rxUpdateWithParams(sqlQueryStringHashMap.get(SqlQuery.DELETE_USER), data);
+        })
+        .map(res -> (Void) null)
+        .subscribe(RxHelper.toSubscriber(resultHandler));
+        return this;
     }
 }
